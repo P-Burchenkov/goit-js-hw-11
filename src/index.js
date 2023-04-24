@@ -2,7 +2,6 @@ import { SearchImageApi } from './api';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-console.log(SimpleLightbox);
 
 const refs = {
   form: document.getElementById('search-form'),
@@ -30,8 +29,7 @@ function onSearch(evt) {
     .then(res => {
       const imagesArray = res.data.hits;
       const totalQuantity = res.data.totalHits;
-      console.log(totalQuantity);
-      console.log(res);
+
       if (imagesArray.length === 0) {
         Notify.warning(
           'Sorry, there are no images matching your search query. Please try again.'
@@ -40,7 +38,7 @@ function onSearch(evt) {
       Notify.success(`Hooray! We found ${totalQuantity} images.`);
       activeLoadmore();
       searchImageApi.incrementPage();
-      imagesArray.map(makeMarkup);
+      makeMarkup(imagesArray);
     })
     .catch(err => console.log(err));
 }
@@ -60,30 +58,46 @@ function onLoadMore() {
         );
         inacniveLoadmore();
       }
-      imagesArray.map(makeMarkup);
+      makeMarkup(imagesArray);
     })
     .catch(err => console.log(err));
 }
 
 function makeMarkup(response) {
-  const card = `<a href="${response.largeImageURL}" class="photo-card">
-  <img src="${response.webformatURL}" alt="${response.tags}" class="gallery-image" loading="lazy" />
+  const markup = response
+    .map(
+      ({
+        largeImageURL,
+        webformatURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => {
+        return `<div class="photo-card">
+  <a href="${largeImageURL}">
+  <img src="${webformatURL}" alt="${tags}" class="gallery-image" loading="lazy" /></a>
   <div class="info">
     <p class="info-item">
-      <b>Likes: ${response.likes}</b>
+      <b>Likes: ${likes}</b>
     </p>
     <p class="info-item">
-      <b>Views: ${response.views}</b> 
+      <b>Views: ${views}</b> 
     </p>
     <p class="info-item">
-      <b>Comments: ${response.comments}</b>
+      <b>Comments: ${comments}</b>
     </p>
     <p class="info-item">
-      <b>Downloads: ${response.downloads}</b>
+      <b>Downloads: ${downloads}</b>
     </p>
-  </div>
-</a>`;
-  refs.gallery.insertAdjacentHTML('beforeend', card);
+   </div>
+  </div>`
+      }
+    )
+    .join();
+  console.log(markup);
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
 
 function clearMarkup() {
@@ -106,7 +120,7 @@ function onImgClick(event) {
   }
   event.preventDefault();
 
-  const modal = new SimpleLightbox(`.gallery a`, {
+  let modal = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
     captionDelay: 250,
     scrollZoom: false,

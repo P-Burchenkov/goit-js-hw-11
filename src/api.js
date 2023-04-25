@@ -14,11 +14,10 @@ export class SearchImageApi {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      per_page: '5',
+      per_page: '40',
       page: `${this.page}`,
     });
     const response = await axios.get(`${URL}?${searchParams}`);
-    // console.log(response.data.totalhits);
     return response;
   }
 

@@ -33,9 +33,14 @@ body {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafafa;
+  background-color: #f0ead6;
   color: #212121;
   line-height: 1.5;
+}
+
+.search-form {
+  background-color: #5a82ce;
+  margin-bottom: 20px;
 }
 
 input {
@@ -68,4 +73,31 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin-bottom: 20px;
+}
+
+.photo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 370px;
+  padding: 5px;
+  border: 2px solid #78ceaf;
+  border-radius: 5px;
+  background-color: #ccceca;
+}
+
+.load-more {
+  display: flex;
+  margin-right: auto;
+  margin-left: auto;
+  border: 2px solid #78ceaf;
+  border-radius: 10px;
+  background-color: #daf976;
+}
+
+.is-hidden {
+  display: none;
 }

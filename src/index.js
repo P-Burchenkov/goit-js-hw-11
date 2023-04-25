@@ -22,7 +22,7 @@ function onSearch(evt) {
   searchImageApi.query = evt.currentTarget.elements.searchQuery.value.trim();
   searchImageApi.resetPage();
   clearMarkup();
-  inacniveLoadmore();
+  inactiveLoadmore();
 
   searchImageApi
     .getImage()
@@ -34,13 +34,17 @@ function onSearch(evt) {
         Notify.warning(
           'Sorry, there are no images matching your search query. Please try again.'
         );
+        return;
       }
       Notify.success(`Hooray! We found ${totalQuantity} images.`);
       activeLoadmore();
       searchImageApi.incrementPage();
       makeMarkup(imagesArray);
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err))
+    .finally(() => {
+      refs.input.value = '';
+    });
 }
 
 function onLoadMore() {
@@ -56,7 +60,7 @@ function onLoadMore() {
         Notify.warning(
           "We're sorry, but you've reached the end of search results."
         );
-        inacniveLoadmore();
+        inactiveLoadmore();
       }
       makeMarkup(imagesArray);
     })
@@ -77,7 +81,7 @@ function makeMarkup(response) {
       }) => {
         return `<div class="photo-card">
   <a href="${largeImageURL}">
-  <img src="${webformatURL}" alt="${tags}" class="gallery-image" loading="lazy" /></a>
+  <img src="${webformatURL}" alt="${tags}" class="gallery__image" loading="lazy" /></a>
   <div class="info">
     <p class="info-item">
       <b>Likes: ${likes}</b>
@@ -92,11 +96,10 @@ function makeMarkup(response) {
       <b>Downloads: ${downloads}</b>
     </p>
    </div>
-  </div>`
+  </div>`;
       }
     )
-    .join();
-  console.log(markup);
+    .join('');
   refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
 
@@ -105,14 +108,14 @@ function clearMarkup() {
 }
 
 function activeLoadmore() {
-  refs.loadMoreBtn.disabled = false;
+    refs.loadMoreBtn.disabled = false;
+    refs.loadMoreBtn.classList.remove('is-hidden')
 }
 
-function inacniveLoadmore() {
+function inactiveLoadmore() {
   refs.loadMoreBtn.disabled = true;
+  refs.loadMoreBtn.classList.add('is-hidden');
 }
-
-//------------
 
 function onImgClick(event) {
   if (event.target.className !== 'gallery__image') {
